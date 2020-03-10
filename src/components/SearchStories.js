@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { doFetchStories } from "../actions/story";
-import Button from "./Button";
+import { Button } from "./Button";
+
+const applyQueryState = query => () => ({
+  query
+});
 
 class SearchStories extends Component {
   constructor(props) {
@@ -14,19 +18,23 @@ class SearchStories extends Component {
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
+
   onSubmit(event) {
     const { query } = this.state;
     if (query) {
       this.props.onFetchStories(query);
 
-      this.setState({ query: "" });
+      this.setState(applyQueryState(""));
     }
+
     event.preventDefault();
   }
+
   onChange(event) {
     const { value } = event.target;
-    this.setState({ query: value });
+    this.setState(applyQueryState(value));
   }
+
   render() {
     return (
       <form onSubmit={this.onSubmit}>
@@ -36,6 +44,7 @@ class SearchStories extends Component {
     );
   }
 }
+
 const mapDispatchToProps = dispatch => ({
   onFetchStories: query => dispatch(doFetchStories(query))
 });
